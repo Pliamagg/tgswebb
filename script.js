@@ -39,10 +39,8 @@ function render() {
         
         card.style.background = colors[0];
 
-        // Фільтр для заміни неробочих посилань на тестові, які підтримують CORS
-        const modelUrl = (gift.model_url && gift.model_url.includes('marketapp.ws')) 
-            ? "https://assets3.lottiefiles.com/packages/lf20_myejig9o.json" 
-            : gift.model_url;
+        // ТЕПЕР ВИКОРИСТОВУЄМО ЛОКАЛЬНИЙ ФАЙЛ
+        const modelUrl = "gift.json"; 
 
         card.innerHTML = `
             <lottie-player 
@@ -59,7 +57,8 @@ function render() {
         grid.appendChild(card);
     });
 
-    document.getElementById('page-info').innerText = `${currentPage} / ${Math.ceil(allGifts.length / itemsPerPage)}`;
+    const totalPages = Math.ceil(allGifts.length / itemsPerPage);
+    document.getElementById('page-info').innerText = `${currentPage} / ${totalPages || 1}`;
 }
 
 async function setTab(type) {
