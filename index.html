@@ -1,51 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Gift Constructor</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob:; connect-src * 'unsafe-inline'; img-src * data: blob:; style-src * 'unsafe-inline';">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gift Master</title>
+    <link rel="stylesheet" href="style.css">
+    
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
-    <style>
-        body { background: #111; color: white; font-family: sans-serif; text-align: center; }
-        .preview { position: relative; width: 300px; height: 300px; margin: 20px auto; border-radius: 20px; overflow: hidden; }
-        .layer { position: absolute; inset: 0; }
-        #pattern { opacity: 0.3; background-size: cover; }
-        .list { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
-        .item { width: 50px; height: 50px; border-radius: 10px; cursor: pointer; border: 2px solid #444; }
-    </style>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
-    <h1>Конструктор</h1>
-    <div class="preview" id="gift-preview">
-        <div id="bg" class="layer"></div>
-        <div id="pattern" class="layer"></div>
-        <div id="lottie-wrap" class="layer">
-            <dotlottie-player id="player" autoplay loop></dotlottie-player>
+
+    <div class="constructor-header">
+        <div class="preview-container">
+            <div id="main-bg" class="layer" style="background: #2c2c2e;"></div>
+            <div id="main-pattern" class="layer"></div>
+            <div class="layer">
+                <lottie-player id="main-player" autoplay loop background="transparent" speed="1"></lottie-player>
+            </div>
         </div>
     </div>
-    <div class="list" id="list"></div>
 
-    <script>
-        const API_URL = "http://127.0.0.1:8000"; // Твій локальний бекенд
+    <div class="tabs">
+        <div class="tab-btn active" onclick="setTab('gifts')">Подарунки</div>
+        <div class="tab-btn" onclick="setTab('bg')">Фони</div>
+        <div class="tab-btn" onclick="setTab('symbols')">Символи</div>
+    </div>
 
-        async function load() {
-            const r = await fetch(`${API_URL}/gifts`);
-            const gifts = await r.json();
-            const list = document.getElementById('list');
+    <div class="grid" id="gift-grid"></div>
 
-            gifts.forEach(g => {
-                const el = document.createElement('div');
-                el.className = 'item';
-                el.style.background = g.backdrop_colors[0];
-                el.onclick = () => {
-                    document.getElementById('bg').style.background = `linear-gradient(45deg, ${g.backdrop_colors.join(',')})`;
-                    document.getElementById('pattern').style.backgroundImage = `url(${g.pattern_url})`;
-                    document.getElementById('player').load(g.model_url);
-                };
-                list.appendChild(el);
-            });
-        }
-        load();
-    </script>
+    <div class="pagination">
+        <button class="page-btn" id="prev-btn" onclick="changePage(-1)">←</button>
+        <span id="page-info">1 / 1</span>
+        <button class="page-btn" id="next-btn" onclick="changePage(1)">→</button>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
