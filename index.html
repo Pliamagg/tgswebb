@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Gift Constructor</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <style>
+        body { background: #111; color: white; font-family: sans-serif; text-align: center; }
+        .preview { position: relative; width: 300px; height: 300px; margin: 20px auto; border-radius: 20px; overflow: hidden; }
+        .layer { position: absolute; inset: 0; }
+        #pattern { opacity: 0.3; background-size: cover; }
+        .list { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+        .item { width: 50px; height: 50px; border-radius: 10px; cursor: pointer; border: 2px solid #444; }
+    </style>
+</head>
+<body>
+    <h1>Конструктор</h1>
+    <div class="preview" id="gift-preview">
+        <div id="bg" class="layer"></div>
+        <div id="pattern" class="layer"></div>
+        <div id="lottie-wrap" class="layer">
+            <dotlottie-player id="player" autoplay loop></dotlottie-player>
+        </div>
+    </div>
+    <div class="list" id="list"></div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000"; // Твій локальний бекенд
+
+        async function load() {
+            const r = await fetch(`${API_URL}/gifts`);
+            const gifts = await r.json();
+            const list = document.getElementById('list');
+
+            gifts.forEach(g => {
+                const el = document.createElement('div');
+                el.className = 'item';
+                el.style.background = g.backdrop_colors[0];
+                el.onclick = () => {
+                    document.getElementById('bg').style.background = `linear-gradient(45deg, ${g.backdrop_colors.join(',')})`;
+                    document.getElementById('pattern').style.backgroundImage = `url(${g.pattern_url})`;
+                    document.getElementById('player').load(g.model_url);
+                };
+                list.appendChild(el);
+            });
+        }
+        load();
+    </script>
+</body>
+</html>
